@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Signature & Autograph Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+        h1 {
+            color: #333;
+        }
+        #signatureStyles {
+            margin-top: 20px;
+        }
+        .signature-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .signature {
+            border: 1px solid #ccc;
+            padding: 20px;
+            font-size: 28px;
+            color: #333;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 10px;
+            background-color: white;
+            margin-right: 20px;
+        }
+        .signature:hover {
+            background: #e0e0e0;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pacifico&family=Sacramento&family=Allura&family=Parisienne&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Creative Signature & Autograph Generator</h1>
+    <form id="signatureForm">
+        <label for="name">Enter Your Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        <button type="submit">Generate Signature Styles</button>
+    </form>
+
+    <div id="signatureStyles" style="display:none;"></div>
+
+    <script>
+        const styles = [
+            { font: 'Great Vibes', weight: 'normal' },
+            { font: 'Pacifico', weight: 'normal' },
+            { font: 'Sacramento', weight: 'normal' },
+            { font: 'Allura', weight: 'normal' },
+            { font: 'Parisienne', weight: 'normal' }
+        ];
+
+        document.getElementById('signatureForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const signatureStylesDiv = document.getElementById('signatureStyles');
+            signatureStylesDiv.innerHTML = '';
+
+            styles.forEach(style => {
+                const signatureContainer = document.createElement('div');
+                signatureContainer.className = 'signature-container';
+
+                const signatureDiv = document.createElement('div');
+                signatureDiv.className = 'signature';
+                signatureDiv.style.fontFamily = style.font;
+                signatureDiv.innerText = name;
+
+                // Create download button
+                const downloadButton = document.createElement('button');
+                downloadButton.innerText = 'Download';
+                downloadButton.addEventListener('click', function() {
+                    downloadSignature(name, style.font);
+                });
+
+                signatureContainer.appendChild(signatureDiv);
+                signatureContainer.appendChild(downloadButton);
+                signatureStylesDiv.appendChild(signatureContainer);
+            });
+
+            signatureStylesDiv.style.display = 'block';
+        });
+
+        function downloadSignature(name, font) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 500;
+            canvas.height = 150;
+            context.fillStyle = '#fff';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.font = `50px "${font}"`;
+            context.fillStyle = '#333';
+            context.fillText(name, 20, 80);
+
+            // Convert the canvas to an image and trigger a download as JPEG
+            canvas.toDataURL('image/jpeg', 1.0, (dataURL) => {
+                const link = document.createElement('a');
+                link.href = dataURL;
+                link.download = `${name}_signature.jpeg`; // Change to .jpeg
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+    </script>
+</body>
+</html>
